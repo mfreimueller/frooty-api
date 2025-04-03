@@ -37,6 +37,6 @@ public class MealController {
                     dbMeal.setComplexity(meal.getComplexity());
                     return mealRepository.save(dbMeal);
                 })
-                .orElseGet(() -> mealRepository.save(meal));
+                .orElseThrow(() -> new EntityNotFoundException(id));
     }
 }
