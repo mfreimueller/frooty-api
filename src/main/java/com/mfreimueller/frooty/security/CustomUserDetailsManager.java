@@ -2,7 +2,6 @@ package com.mfreimueller.frooty.security;
 
 import com.mfreimueller.frooty.domain.User;
 import com.mfreimueller.frooty.repositories.UserRepository;
-import jakarta.transaction.NotSupportedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
