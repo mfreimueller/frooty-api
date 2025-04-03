@@ -1,10 +1,13 @@
 package com.mfreimueller.frooty.controller;
 
 import com.mfreimueller.frooty.domain.Category;
+import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/categories")
@@ -25,6 +28,13 @@ public class CategoryController {
     @GetMapping("/{id}")
     public Category findOne(@PathVariable Integer id) {
         return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id));
+    }
+
+    @GetMapping("/{id}/meals")
+    public Set<Meal> findMealsOfOne(@PathVariable Integer id) {
+        return categoryRepository.findById(id)
+                .map(Category::getMeals)
                 .orElseThrow(() -> new EntityNotFoundException(id));
     }
 
