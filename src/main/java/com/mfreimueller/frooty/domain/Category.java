@@ -14,7 +14,7 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    private Set<Meal> meals;
+    private Set<Meal> meals = Set.of();
 
     public Category() {
 
