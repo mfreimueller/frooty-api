@@ -22,7 +22,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
-    private Set<Group> groups;
+    private Set<Group> groups = Set.of();
 
     public User() {
 

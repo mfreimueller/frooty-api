@@ -15,7 +15,7 @@ public class Group {
     private String name;
 
     @ManyToMany(mappedBy = "groups")
-    private Set<User> users;
+    private Set<User> users = Set.of();
 
     public Group() {
 

@@ -21,7 +21,7 @@ public class Meal {
             joinColumns = @JoinColumn(name = "meal_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<Category> categories;
+    private Set<Category> categories = Set.of();
 
     public Meal() {
 
