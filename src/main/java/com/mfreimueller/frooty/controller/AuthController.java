@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -37,7 +39,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()) // TODO: which principal?
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
 
         UserDetails user = userDetailsManager.loadUserByUsername(authRequest.getUsername());
@@ -48,7 +50,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
-        if (userRepository.findByUsername(signupRequest.getUsername()) != null) {
+        if (userRepository.findByUsername(signupRequest.getUsername()).isPresent()) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
@@ -56,7 +58,8 @@ public class AuthController {
 
         User user = new User(
                 signupRequest.getUsername(),
-                passwordEncoder.encode(signupRequest.getPassword())
+                passwordEncoder.encode(signupRequest.getPassword()),
+                Set.of()
         );
         userRepository.save(user);
 
