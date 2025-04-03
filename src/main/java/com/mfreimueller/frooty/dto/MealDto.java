@@ -10,13 +10,13 @@ public class MealDto {
     private final String name;
     private final Integer complexity;
 
-    private final List<String> categories;
+    private final List<Integer> categories;
 
     public MealDto(Meal meal) {
         id = meal.getId();
         name = meal.getName();
         complexity = meal.getComplexity();
-        categories = meal.getCategories().stream().map(Category::getName).toList();
+        categories = meal.getCategories().stream().map(Category::getId).toList();
     }
 
     public Integer getId() {
@@ -31,7 +31,7 @@ public class MealDto {
         return complexity;
     }
 
-    public List<String> getCategories() {
+    public List<Integer> getCategories() {
         return categories;
     }
 }
