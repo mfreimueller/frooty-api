@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class CustomUserDetailsManager implements UserDetailsManager {
     @Autowired
@@ -15,30 +17,25 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-        User u = new User(user.getUsername(), user.getPassword());
+        User u = new User(user.getUsername(), user.getPassword(), Set.of());
         userRepository.save(u);
     }
 
     @Override
     public void updateUser(UserDetails user) {
-        User u = userRepository.findByUsername(user.getUsername());
+        User u = userRepository.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("No user named " + user.getUsername() + " found."));
 
-        // TODO: encrypt password?
-        // TODO: error handling
-        if (u != null) {
-            u.setPassword(user.getPassword());
-            userRepository.save(u);
-        }
+        u.setPassword(user.getPassword());
+        userRepository.save(u);
     }
 
     @Override
     public void deleteUser(String username) {
-        User u = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No user named " + username + " found."));
 
-        // TODO: error handling
-        if (u != null) {
-            userRepository.delete(u);
-        }
+        userRepository.delete(user);
     }
 
     @Override
@@ -49,16 +46,13 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return userRepository.findByUsername(username) != null;
+        return userRepository.findByUsername(username).isPresent();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User u = userRepository.findByUsername(username);
-
-        if (u == null) {
-            throw  new UsernameNotFoundException("No user named " + username + " found.");
-        }
+        User u = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No user named " + username + " found."));
 
         return org.springframework.security.core.userdetails.User.withUsername(username)
                 .password(u.getPassword())
