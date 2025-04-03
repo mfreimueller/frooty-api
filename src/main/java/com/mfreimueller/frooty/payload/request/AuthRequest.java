@@ -1,4 +1,4 @@
-package com.mfreimueller.frooty.controller;
+package com.mfreimueller.frooty.payload.request;
 
 public class AuthRequest {
     private String username;
