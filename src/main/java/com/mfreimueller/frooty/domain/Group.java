@@ -26,6 +26,12 @@ public class Group {
         this.users = users;
     }
 
+    public Group(Integer id, String name, Set<User> users) {
+        this.id = id;
+        this.name = name;
+        this.users = users;
+    }
+
     public Integer getId() {
         return id;
     }
