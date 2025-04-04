@@ -26,7 +26,12 @@ public class GroupController {
     public List<GroupDto> getAll(Principal principal) {
         return userRepository.findByUsername(principal.getName())
                 .map(User::getGroups)
-                .map(s -> s.stream().map(GroupDto::new).toList())
+                .map(s ->
+                        s.stream()
+                                .map(GroupDto::new)
+                                .sorted((g1, g2) -> g1.getId().compareTo(g2.getId()))
+                                .toList()
+                )
                 .orElseThrow();
     }
 
