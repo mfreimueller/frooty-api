@@ -1,13 +1,14 @@
 package com.mfreimueller.frooty.repositories;
 
 import com.mfreimueller.frooty.domain.User;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +20,8 @@ public class UserRepositoryTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        User user1 = new User("Alice", "testpass1");
-        User user2 = new User("Bob", "testpass2");
+        User user1 = new User("Alice", "testpass1", Set.of());
+        User user2 = new User("Bob", "testpass2", Set.of());
 
         assertNull(user1.getId());
         assertNull(user2.getId());
@@ -34,9 +35,9 @@ public class UserRepositoryTest {
 
     @Test
     public void testFetchData() {
-        User user1 = userRepository.findByUsername("Alice");
-        assertNotNull(user1);
-        assertEquals("testpass1", user1.getPassword());
+        Optional<User> user1 = userRepository.findByUsername("Alice");
+        assertTrue(user1.isPresent());
+        assertEquals("testpass1", user1.get().getPassword());
 
         Iterable<User> allUsers = userRepository.findAll();
         int count = 0;
