@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,11 @@ public class GroupController {
         Group newGroup = groupRepository.save(group);
 
         final User currentUser = user(principal);
-        currentUser.getGroups().add(newGroup);
+
+        HashSet<Group> groups = new HashSet<>(currentUser.getGroups());
+        groups.add(newGroup);
+        currentUser.setGroups(groups);
+
         userRepository.save(currentUser);
 
         newGroup.setUsers(Set.of(currentUser));
