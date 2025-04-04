@@ -25,6 +25,12 @@ public class Category {
         this.meals = meals;
     }
 
+    public Category(Integer id, String name, Set<Meal> meals) {
+        this.id = id;
+        this.name = name;
+        this.meals = meals;
+    }
+
     public Integer getId() {
         return id;
     }

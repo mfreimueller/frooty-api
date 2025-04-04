@@ -33,6 +33,13 @@ public class Meal {
         this.categories = categories;
     }
 
+    public Meal(Integer id, String name, Integer complexity, Set<Category> categories) {
+        this.id = id;
+        this.name = name;
+        this.complexity = complexity;
+        this.categories = categories;
+    }
+
     public Integer getId() {
         return id;
     }
