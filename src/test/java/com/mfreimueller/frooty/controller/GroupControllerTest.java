@@ -73,7 +73,7 @@ public class GroupControllerTest {
         Set<Group> groups = groups(user);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
-        when(groupRepository.findById(1)).thenReturn(groups.stream().findFirst());
+        when(groupRepository.findById(1)).thenReturn(groups.stream().min((g1, g2) -> g1.getId().compareTo(g2.getId())));
 
         GroupDto result = groupController.findOne(principal(), 1);
         assertEquals(1, result.getId());
