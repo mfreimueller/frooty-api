@@ -40,6 +40,14 @@ public class History {
         this.rating = rating;
     }
 
+    public History(Integer id, Group group, Meal meal, Date date, Integer rating) {
+        this.id = id;
+        this.group = group;
+        this.meal = meal;
+        this.date = date;
+        this.rating = rating;
+    }
+
     public Integer getId() {
         return id;
     }
