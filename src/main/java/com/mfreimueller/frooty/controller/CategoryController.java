@@ -40,7 +40,7 @@ public class CategoryController {
     public List<MealDto> findMealsOfOne(@PathVariable Integer id) {
         return categoryRepository.findById(id)
                 .map(Category::getMeals)
-                .map(s -> s.stream().map(MealDto::new).toList())
+                .map(s -> s.stream().map(MealDto::new).sorted((m1, m2) -> m1.getId().compareTo(m2.getId())).toList())
                 .orElseThrow(() -> new EntityNotFoundException(id));
     }
 
