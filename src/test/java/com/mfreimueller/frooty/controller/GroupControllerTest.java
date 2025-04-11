@@ -102,7 +102,7 @@ public class GroupControllerTest {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(groupRepository.findById(1)).thenReturn(group);
 
-        List<UserDto> result = groupController.findUsersOfOne(principal(), group.get().getId());
+        List<UserDto> result = groupController.findUsersOfOne(principal(), 1);
         assertEquals(1, result.size());
         assertEquals(1, result.get(0).getId());
         verify(groupRepository, times(1)).findById(1);
