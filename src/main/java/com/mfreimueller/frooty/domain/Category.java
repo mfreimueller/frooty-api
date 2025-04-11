@@ -13,7 +13,7 @@ public class Category {
     @Column(unique = true, length = 32)
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @OneToMany(mappedBy = "category")
     private Set<Meal> meals = Set.of();
 
     public Category() {

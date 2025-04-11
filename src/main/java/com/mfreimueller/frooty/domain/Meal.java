@@ -1,8 +1,10 @@
 package com.mfreimueller.frooty.domain;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Set;
+import java.util.Optional;
 
 @Entity
 @Table(name = "meal_tbl")
@@ -15,29 +17,26 @@ public class Meal {
     @Column
     private Integer complexity;
 
-    @ManyToMany
-    @JoinTable(
-            name = "meal_category_tbl",
-            joinColumns = @JoinColumn(name = "meal_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Category> categories = Set.of();
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private Category category;
 
     public Meal() {
 
     }
 
-    public Meal(String name, Integer complexity, Set<Category> categories) {
+    public Meal(String name, Integer complexity, Category category) {
         this.name = name;
         this.complexity = complexity;
-        this.categories = categories;
+        this.category = category;
     }
 
-    public Meal(Integer id, String name, Integer complexity, Set<Category> categories) {
+    public Meal(Integer id, String name, Integer complexity, Category category) {
         this.id = id;
         this.name = name;
         this.complexity = complexity;
-        this.categories = categories;
+        this.category = category;
     }
 
     public Integer getId() {
@@ -60,11 +59,11 @@ public class Meal {
         this.complexity = complexity;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
+    public Optional<Category> getCategory() {
+        return Optional.ofNullable(category);
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

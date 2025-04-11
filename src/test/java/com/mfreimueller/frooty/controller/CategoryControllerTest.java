@@ -76,8 +76,8 @@ public class CategoryControllerTest {
         List<Category> categories = List.of(
                 new Category(1, "Vegetarisch", Set.of()),
                 new Category(2, "Suppe", Set.of(
-                        new Meal(1, "Klare Suppe", 1, Set.of()),
-                        new Meal(2, "Tomatensuppe", 4, Set.of())
+                        new Meal(1, "Klare Suppe", 1, null),
+                        new Meal(2, "Tomatensuppe", 4, null)
                 ))
         );
         Optional<Category> returnCategory = Optional.of(categories.get(1));

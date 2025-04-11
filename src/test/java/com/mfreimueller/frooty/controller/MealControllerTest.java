@@ -29,8 +29,8 @@ public class MealControllerTest {
     @Test
     public void getAll_shouldReturnAllMeals() {
         List<Meal> meals = List.of(
-                new Meal(1, "Suppe", 2, Set.of()),
-                new Meal(2, "Brot", 1, Set.of())
+                new Meal(1, "Suppe", 2, null),
+                new Meal(2, "Brot", 1, null)
         );
 
         when(mealRepository.findAll()).thenReturn(meals);
@@ -43,8 +43,8 @@ public class MealControllerTest {
 
     @Test
     public void createOne_shouldSaveAndReturnMeal() {
-        Meal input = new Meal("Suppe", 2, Set.of());
-        Meal saved = new Meal(1, "Suppe", 2, Set.of());
+        Meal input = new Meal("Suppe", 2, null);
+        Meal saved = new Meal(1, "Suppe", 2, null);
 
         when(mealRepository.save(input)).thenReturn(saved);
 
@@ -56,7 +56,7 @@ public class MealControllerTest {
 
     @Test
     public void findOne_shouldReturnMeal() {
-        Meal meal = new Meal(2, "Suppe", 2, Set.of());
+        Meal meal = new Meal(2, "Suppe", 2, null);
         Optional<Meal> returnMeal = Optional.of(meal);
 
         when(mealRepository.findById(2)).thenReturn(returnMeal);
@@ -78,7 +78,7 @@ public class MealControllerTest {
     @Test
     public void updateOne_shouldSaveAndReturnMeal() {
         Meal meal = new Meal(1, "Suppe", 2, null);
-        Meal updated = new Meal(1, "Knoblauchsuppe", 3, Set.of());
+        Meal updated = new Meal(1, "Knoblauchsuppe", 3, null);
 
         when(mealRepository.findById(1)).thenReturn(Optional.of(meal));
         when(mealRepository.save(any(Meal.class))).thenReturn(updated);
@@ -93,7 +93,7 @@ public class MealControllerTest {
 
     @Test
     public void updateOne_shouldThrowAnExceptionOnUnknownId() {
-        Meal meal = new Meal(1, "Suppe", 2, Set.of());
+        Meal meal = new Meal(1, "Suppe", 2, null);
 
         when(mealRepository.findById(1)).thenReturn(Optional.empty());
 
