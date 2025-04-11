@@ -17,7 +17,7 @@ public class HistoryDto {
         id = history.getId();
         groupId = history.getGroup().getId();
         mealId = history.getMeal().getId();
-        createdOn = history.getCreatedOn();
+        createdOn = history.getScheduledOn();
         rating = history.getRating();
     }
 

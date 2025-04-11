@@ -23,9 +23,9 @@ public class History {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Meal meal;
 
-    @Column(name = "created_on")
+    @Column(name = "scheduled_on")
     @Temporal(TemporalType.DATE)
-    private Date createdOn;
+    private Date scheduledOn;
 
     @Column
     private Integer rating;
@@ -34,18 +34,18 @@ public class History {
 
     }
 
-    public History(Group group, Meal meal, Date createdOn, Integer rating) {
+    public History(Group group, Meal meal, Date scheduledOn, Integer rating) {
         this.group = group;
         this.meal = meal;
-        this.createdOn = createdOn;
+        this.scheduledOn = scheduledOn;
         this.rating = rating;
     }
 
-    public History(Integer id, Group group, Meal meal, Date createdOn, Integer rating) {
+    public History(Integer id, Group group, Meal meal, Date scheduledOn, Integer rating) {
         this.id = id;
         this.group = group;
         this.meal = meal;
-        this.createdOn = createdOn;
+        this.scheduledOn = scheduledOn;
         this.rating = rating;
     }
 
@@ -65,12 +65,12 @@ public class History {
         this.meal = meal;
     }
 
-    public Date getCreatedOn() {
-        return createdOn;
+    public Date getScheduledOn() {
+        return scheduledOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
+    public void setScheduledOn(Date scheduledOn) {
+        this.scheduledOn = scheduledOn;
     }
 
     public Integer getRating() {

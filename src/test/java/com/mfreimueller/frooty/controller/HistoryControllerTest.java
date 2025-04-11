@@ -65,7 +65,7 @@ public class HistoryControllerTest {
         Group group = group(user);
 
         History history = history(group).stream().findFirst().orElseThrow();
-        History savedHistory = new History(4, history.getGroup(), history.getMeal(), history.getCreatedOn(), history.getRating());
+        History savedHistory = new History(4, history.getGroup(), history.getMeal(), history.getScheduledOn(), history.getRating());
 
         HistoryDto historyDto = new HistoryDto(history);
 
@@ -93,7 +93,7 @@ public class HistoryControllerTest {
         HistoryDto input = new HistoryDto(history);
 
         Meal newMeal = new Meal(3, "Essen #3", 5, null);
-        History updated = new History(history.getId(), history.getGroup(), newMeal, history.getCreatedOn(), 1);
+        History updated = new History(history.getId(), history.getGroup(), newMeal, history.getScheduledOn(), 1);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(historyRepository.findById(input.getId())).thenReturn(Optional.of(history));

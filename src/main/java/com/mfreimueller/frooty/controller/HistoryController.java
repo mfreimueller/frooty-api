@@ -54,7 +54,7 @@ public class HistoryController {
                         h.getGroup().getUsers().contains(user(principal)))
                 .map(h -> {
                     if (dto.getCreatedOn() != null) {
-                        h.setCreatedOn(dto.getCreatedOn());
+                        h.setScheduledOn(dto.getCreatedOn());
                     }
 
                     if (dto.getRating() != null) {
