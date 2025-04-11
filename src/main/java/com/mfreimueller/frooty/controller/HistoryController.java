@@ -4,9 +4,7 @@ import com.mfreimueller.frooty.domain.Group;
 import com.mfreimueller.frooty.domain.History;
 import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.domain.User;
-import com.mfreimueller.frooty.dto.GroupDto;
 import com.mfreimueller.frooty.dto.HistoryDto;
-import com.mfreimueller.frooty.dto.UserDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.GroupRepository;
 import com.mfreimueller.frooty.repositories.HistoryRepository;
@@ -16,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/history")
@@ -39,7 +34,7 @@ public class HistoryController {
                 .map(s ->
                         s.stream()
                                 .map(HistoryDto::new)
-                                .sorted((h1, h2) -> h1.getDate().compareTo(h2.getDate()))
+                                .sorted(Comparator.comparing(HistoryDto::getCreatedOn))
                                 .toList())
                 .orElseThrow();
     }
@@ -47,7 +42,7 @@ public class HistoryController {
     @PostMapping("/{groupId}")
     public HistoryDto createOne(Principal principal, @PathVariable Integer groupId, @RequestBody HistoryDto dto) {
         Group group = group(principal, groupId);
-        History history = new History(group, meal(dto.getMealId()), dto.getDate(), dto.getRating());
+        History history = new History(group, meal(dto.getMealId()), dto.getCreatedOn(), dto.getRating());
 
         return new HistoryDto(historyRepository.save(history));
     }
@@ -58,8 +53,8 @@ public class HistoryController {
                 .filter(h -> Objects.equals(groupId, h.getGroup().getId()) &&
                         h.getGroup().getUsers().contains(user(principal)))
                 .map(h -> {
-                    if (dto.getDate() != null) {
-                        h.setDate(dto.getDate());
+                    if (dto.getCreatedOn() != null) {
+                        h.setCreatedOn(dto.getCreatedOn());
                     }
 
                     if (dto.getRating() != null) {

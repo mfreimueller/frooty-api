@@ -4,9 +4,7 @@ import com.mfreimueller.frooty.domain.Group;
 import com.mfreimueller.frooty.domain.History;
 import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.domain.User;
-import com.mfreimueller.frooty.dto.GroupDto;
 import com.mfreimueller.frooty.dto.HistoryDto;
-import com.mfreimueller.frooty.dto.UserDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.GroupRepository;
 import com.mfreimueller.frooty.repositories.HistoryRepository;
@@ -20,9 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,7 +65,7 @@ public class HistoryControllerTest {
         Group group = group(user);
 
         History history = history(group).stream().findFirst().orElseThrow();
-        History savedHistory = new History(4, history.getGroup(), history.getMeal(), history.getDate(), history.getRating());
+        History savedHistory = new History(4, history.getGroup(), history.getMeal(), history.getCreatedOn(), history.getRating());
 
         HistoryDto historyDto = new HistoryDto(history);
 
@@ -96,8 +92,8 @@ public class HistoryControllerTest {
 
         HistoryDto input = new HistoryDto(history);
 
-        Meal newMeal = new Meal(3, "Essen #3", 5, Set.of());
-        History updated = new History(history.getId(), history.getGroup(), newMeal, history.getDate(), 1);
+        Meal newMeal = new Meal(3, "Essen #3", 5, null);
+        History updated = new History(history.getId(), history.getGroup(), newMeal, history.getCreatedOn(), 1);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         when(historyRepository.findById(input.getId())).thenReturn(Optional.of(history));
@@ -152,7 +148,7 @@ public class HistoryControllerTest {
     }
 
     private List<History> history(Group group) {
-        Meal meal = new Meal(1, "Essen #1", 1, Set.of());
+        Meal meal = new Meal(1, "Essen #1", 1, null);
 
         LocalDate now = LocalDate.now();
         Date today = Date.from(now.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -161,7 +157,7 @@ public class HistoryControllerTest {
 
         return List.of(
                 new History(1, group, meal, weekAgo, 10),
-                new History(1, group, new Meal(2, "Essen #2", 5, Set.of()), twoDaysAgo, 3),
+                new History(1, group, new Meal(2, "Essen #2", 5, null), twoDaysAgo, 3),
                 new History(1, group, meal, today, 9)
         );
     }

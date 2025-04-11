@@ -8,7 +8,7 @@ public class HistoryDto {
     private Integer id;
     private Integer groupId;
     private Integer mealId;
-    private Date date;
+    private Date createdOn;
     private Integer rating;
 
     public HistoryDto() {}
@@ -17,7 +17,7 @@ public class HistoryDto {
         id = history.getId();
         groupId = history.getGroup().getId();
         mealId = history.getMeal().getId();
-        date = history.getDate();
+        createdOn = history.getCreatedOn();
         rating = history.getRating();
     }
 
@@ -33,11 +33,13 @@ public class HistoryDto {
         return mealId;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getCreatedOn() {
+        return createdOn;
     }
 
     public Integer getRating() {
         return rating;
     }
+
+
 }
