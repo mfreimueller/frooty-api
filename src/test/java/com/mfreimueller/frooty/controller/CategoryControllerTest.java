@@ -5,7 +5,7 @@ import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.dto.CategoryDto;
 import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
-import com.mfreimueller.frooty.repositories.CategoryRepository;
+import com.mfreimueller.frooty.service.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -25,7 +24,7 @@ public class CategoryControllerTest {
     private CategoryController categoryController;
 
     @Mock
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
 
     @Test
     public void getAll_shouldReturnAllCategories() {
@@ -34,12 +33,12 @@ public class CategoryControllerTest {
                 new Category("Suppe", Set.of())
         );
 
-        when(categoryRepository.findAll()).thenReturn(categories);
+        when(categoryService.findAll()).thenReturn(categories);
 
-        List<CategoryDto> result = categoryController.getAll();
+        List<CategoryDto> result = categoryController.findAll();
         assertEquals(2, result.size());
         assertEquals("Vegetarisch", result.get(0).getName());
-        verify(categoryRepository, times(1)).findAll();
+        verify(categoryService, times(1)).findAll();
     }
 
     @Test
@@ -47,12 +46,12 @@ public class CategoryControllerTest {
         Category input = new Category("Suppe", Set.of());
         Category saved = new Category(1, "Suppe", Set.of());
 
-        when(categoryRepository.save(input)).thenReturn(saved);
+        when(categoryService.createOne(input)).thenReturn(saved);
 
         CategoryDto result = categoryController.createOne(input);
         assertEquals(1, result.getId());
         assertEquals("Suppe", result.getName());
-        verify(categoryRepository, times(1)).save(input);
+        verify(categoryService, times(1)).createOne(input);
     }
 
     @Test
@@ -61,38 +60,34 @@ public class CategoryControllerTest {
                 new Category(1, "Vegetarisch", Set.of()),
                 new Category(2, "Suppe", Set.of())
         );
-        Optional<Category> returnCategory = Optional.of(categories.get(1));
+        Category returnCategory = categories.get(1);
 
-        when(categoryRepository.findById(2)).thenReturn(returnCategory);
+        when(categoryService.findOne(2)).thenReturn(returnCategory);
 
         CategoryDto result = categoryController.findOne(2);
         assertEquals(2, result.getId());
         assertEquals("Suppe", result.getName());
-        verify(categoryRepository, times(1)).findById(2);
+        verify(categoryService, times(1)).findOne(2);
     }
 
     @Test
     public void findMealsOfOne_shouldReturnMealsOfCategory() {
-        List<Category> categories = List.of(
-                new Category(1, "Vegetarisch", Set.of()),
-                new Category(2, "Suppe", Set.of(
-                        new Meal(1, "Klare Suppe", 1, null),
-                        new Meal(2, "Tomatensuppe", 4, null)
-                ))
+        List<Meal> meals = List.of(
+            new Meal(1, "Klare Suppe", 1, null),
+            new Meal(2, "Tomatensuppe", 4, null)
         );
-        Optional<Category> returnCategory = Optional.of(categories.get(1));
 
-        when(categoryRepository.findById(2)).thenReturn(returnCategory);
+        when(categoryService.findMealsOfOne(2)).thenReturn(meals);
 
         List<MealDto> result = categoryController.findMealsOfOne(2);
         assertEquals(2, result.size());
         assertEquals("Klare Suppe", result.get(0).getName());
-        verify(categoryRepository, times(1)).findById(2);
+        verify(categoryService, times(1)).findMealsOfOne(2);
     }
 
     @Test
     public void findMealsOfOne_shouldThrowAnExceptionOnUnknownId() {
-        when(categoryRepository.findById(1)).thenReturn(Optional.empty());
+        when(categoryService.findMealsOfOne(1)).thenThrow(new EntityNotFoundException(1, "Category"));
 
         assertThrows(EntityNotFoundException.class,
                 () -> categoryController.findMealsOfOne(1));
@@ -100,27 +95,24 @@ public class CategoryControllerTest {
 
     @Test
     public void updateOne_shouldSaveAndReturnCategory() {
-        List<Category> categories = List.of(
-                new Category(1, "Supep", Set.of())
-        );
-        Optional<Category> returnCategory = Optional.of(categories.get(0));
+        Category categoryToUpdate = new Category(1, "Supep", Set.of());
+        Category updatedCategory = new Category(1, "Suppe", Set.of());
 
-        when(categoryRepository.findById(1)).thenReturn(returnCategory);
+        when(categoryService.updateOne(1, categoryToUpdate)).thenReturn(updatedCategory);
 
-        Category saved = new Category(1, "Suppe", Set.of());
-        when(categoryRepository.save(categories.get(0))).thenReturn(saved);
-
-        CategoryDto result = categoryController.updateOne(1, categories.get(0));
+        CategoryDto result = categoryController.updateOne(1, categoryToUpdate);
         assertEquals(1, result.getId());
         assertEquals("Suppe", result.getName());
-        verify(categoryRepository, times(1)).save(categories.get(0));
+
+        verify(categoryService, times(1)).updateOne(1, categoryToUpdate);
     }
 
     @Test
     public void updateOne_shouldThrowAnExceptionOnUnknownId() {
-        when(categoryRepository.findById(1)).thenReturn(Optional.empty());
+        Category categoryToUpdate = new Category(1, "Supep", Set.of());
+        when(categoryService.updateOne(1, categoryToUpdate)).thenThrow(new EntityNotFoundException(1, "Controller"));
 
         assertThrows(EntityNotFoundException.class,
-                () -> categoryController.updateOne(1, new Category(1, "Suppe", Set.of())));
+                () -> categoryController.updateOne(1, categoryToUpdate));
     }
 }
