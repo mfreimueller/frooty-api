@@ -4,6 +4,7 @@ import com.mfreimueller.frooty.domain.Category;
 import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.CategoryRepository;
+import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class CategoryService {
     }
 
     public Category createOne(Category category) {
+        Assert.isNull(category.getId());
+
         return categoryRepository.save(category);
     }
 
