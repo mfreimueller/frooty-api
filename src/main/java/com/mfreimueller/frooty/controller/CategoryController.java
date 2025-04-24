@@ -1,6 +1,5 @@
 package com.mfreimueller.frooty.controller;
 
-import com.mfreimueller.frooty.domain.Category;
 import com.mfreimueller.frooty.dto.CategoryDto;
 import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.service.CategoryService;
@@ -18,13 +17,12 @@ public class CategoryController {
     @GetMapping
     public List<CategoryDto> findAll() {
         return categoryService.findAll()
-                .stream()
                 .map(CategoryDto::new)
                 .toList();
     }
 
     @PostMapping
-    public CategoryDto createOne(@RequestBody Category category) {
+    public CategoryDto createOne(@RequestBody CategoryDto category) {
         return new CategoryDto(categoryService.createOne(category));
     }
 
@@ -42,7 +40,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public CategoryDto updateOne(@PathVariable Integer id, @RequestBody Category category) {
+    public CategoryDto updateOne(@PathVariable Integer id, @RequestBody CategoryDto category) {
         return new CategoryDto(categoryService.updateOne(id, category));
     }
 }

@@ -4,10 +4,19 @@ import com.mfreimueller.frooty.domain.Category;
 import com.mfreimueller.frooty.domain.Meal;
 
 public class MealDto {
-    private final Integer id;
-    private final String name;
-    private final Integer complexity;
-    private final Integer categoryId;
+    private Integer id;
+    private String name;
+    private Integer complexity;
+    private Integer categoryId;
+
+    public MealDto() {}
+
+    public MealDto(Integer id, String name, Integer complexity, Integer categoryId) {
+        this.id = id;
+        this.name = name;
+        this.complexity = complexity;
+        this.categoryId = categoryId;
+    }
 
     public MealDto(Meal meal) {
         id = meal.getId();

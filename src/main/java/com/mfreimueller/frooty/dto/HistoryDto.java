@@ -13,6 +13,14 @@ public class HistoryDto {
 
     public HistoryDto() {}
 
+    public HistoryDto(Integer id, Integer groupId, Integer mealId, Date createdOn, Integer rating) {
+        this.id = id;
+        this.groupId = groupId;
+        this.mealId = mealId;
+        this.createdOn = createdOn;
+        this.rating = rating;
+    }
+
     public HistoryDto(History history) {
         id = history.getId();
         groupId = history.getGroup().getId();

@@ -3,17 +3,30 @@ package com.mfreimueller.frooty.dto;
 import com.mfreimueller.frooty.domain.Group;
 import com.mfreimueller.frooty.domain.User;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GroupDto {
-    private final Integer id;
-    private final String name;
-    private final List<Integer> users;
+    private Integer id;
+    private String name;
+    private Set<Integer> users;
+
+    public GroupDto() {}
+
+    public GroupDto(Integer id, String name, Set<Integer> users) {
+        this.id = id;
+        this.name = name;
+        this.users = users;
+    }
 
     public GroupDto(Group group) {
         id = group.getId();
         name = group.getName();
-        users = group.getUsers().stream().map(User::getId).toList();
+
+        HashSet<Integer> userIds = new HashSet<>();
+        group.getUsers().stream().map(User::getId).forEach(userIds::add);
+
+        this.users = userIds;
     }
 
     public Integer getId() {
@@ -24,7 +37,7 @@ public class GroupDto {
         return name;
     }
 
-    public List<Integer> getUsers() {
+    public Set<Integer> getUsers() {
         return users;
     }
 }

@@ -42,7 +42,7 @@ public class GroupControllerTest {
 
     @Test
     public void createOne_shouldSaveAndReturnGroup() {
-        Group input = new Group(null, "Beste Gruppe", Set.of());
+        GroupDto input = new GroupDto(null, "Beste Gruppe", Set.of());
         Group saved = new Group(3, "Beste Gruppe", Set.of());
 
         when(groupService.createOne(input)).thenReturn(saved);
@@ -81,7 +81,7 @@ public class GroupControllerTest {
 
     @Test
     public void updateOne_shouldSaveAndReturnGroup() {
-        Group input = new Group(2, "Beste Gruppe", Set.of());
+        GroupDto input = new GroupDto(2, "Beste Gruppe", Set.of());
         Group updated = new Group(2, "Beste Gruppe", Set.of());
 
         when(groupService.updateOne(2, input)).thenReturn(updated);

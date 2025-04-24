@@ -1,6 +1,5 @@
 package com.mfreimueller.frooty.controller;
 
-import com.mfreimueller.frooty.domain.Group;
 import com.mfreimueller.frooty.dto.GroupDto;
 import com.mfreimueller.frooty.dto.UserDto;
 import com.mfreimueller.frooty.service.GroupService;
@@ -24,7 +23,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public GroupDto createOne(@RequestBody Group group) {
+    public GroupDto createOne(@RequestBody GroupDto group) {
         return new GroupDto(groupService.createOne(group));
     }
 
@@ -42,7 +41,7 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public GroupDto updateOne(@PathVariable Integer id, @RequestBody Group group) {
+    public GroupDto updateOne(@PathVariable Integer id, @RequestBody GroupDto group) {
         return new GroupDto(groupService.updateOne(id, group));
     }
 }

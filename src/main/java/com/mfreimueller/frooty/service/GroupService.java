@@ -2,13 +2,13 @@ package com.mfreimueller.frooty.service;
 
 import com.mfreimueller.frooty.domain.Group;
 import com.mfreimueller.frooty.domain.User;
+import com.mfreimueller.frooty.dto.GroupDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.GroupRepository;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +18,6 @@ public class GroupService {
     private GroupRepository groupRepository;
     @Autowired
     private CurrentUserService currentUserService;
-    @Autowired
-    private UserService userService;
 
     public List<Group> findAll() {
         final User currentUser = currentUserService.getCurrentUser();
@@ -30,22 +28,17 @@ public class GroupService {
                 .toList();
     }
 
-    public Group createOne(Group group) {
-        Assert.isNull(group.getId(), "The id of the group to create must be null.");
+    public Group createOne(GroupDto groupDto) {
+        Assert.notNull(groupDto, "group must not be null.");
+        Assert.isNull(groupDto.getId(), "The id of the group to create must be null.");
+        Assert.notNull(groupDto.getName(), "name must not be null.");
+        Assert.isTrue(!groupDto.getName().isEmpty(), "name must not be empty.");
 
         final User currentUser = currentUserService.getCurrentUser();
 
-        Group newGroup = groupRepository.save(group);
-
-        HashSet<Group> groups = new HashSet<>(currentUser.getGroups());
-        groups.add(newGroup);
-        currentUser.setGroups(groups);
-
-        userService.updateUser(currentUser);
-
-        newGroup.setUsers(Set.of(currentUser));
-
-        return newGroup;
+        // TODO: verify that this way the user is added to the group!
+        final Group groupToCreate = new Group(groupDto.getName(), Set.of(currentUser));
+        return groupRepository.save(groupToCreate);
     }
 
     public Group findOne(Integer id) {
@@ -69,19 +62,21 @@ public class GroupService {
                 .orElseThrow(() -> new EntityNotFoundException(id));
     }
 
-    public Group updateOne(Integer id, Group group) {
-        Assert.notNull(id, "The id of the group to update must not be null.");
-        Assert.notNull(group, "The group to update must not be null.");
+    public Group updateOne(Integer id, GroupDto groupDto) {
+        Assert.notNull(id, "id must not be null.");
+        Assert.notNull(groupDto, "group must not be null.");
 
         final User currentUser = currentUserService.getCurrentUser();
 
         return groupRepository.findById(id)
                 .filter(g -> g.getUsers().contains(currentUser))
                 .map(g -> {
-                    g.setName(group.getName());
+                    if (groupDto.getName() != null && !groupDto.getName().isEmpty()) {
+                        g.setName(groupDto.getName());
+                    }
 
-                    // TODO: make sure that we don't wipe all users. - invite mechanic?
-                    g.setUsers(group.getUsers());
+                    // TODO: invite mechanic.
+
                     return groupRepository.save(g);
                 })
                 .orElseThrow(() -> new EntityNotFoundException(id));
