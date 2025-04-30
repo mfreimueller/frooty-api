@@ -1,6 +1,7 @@
 package com.mfreimueller.frooty.controller;
 
 import com.mfreimueller.frooty.dto.HistoryDto;
+import com.mfreimueller.frooty.dto.WeekDto;
 import com.mfreimueller.frooty.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,8 @@ public class HistoryController {
     private HistoryService historyService;
 
     @GetMapping("/{groupId}")
-    public List<HistoryDto> findAll(@PathVariable Integer groupId) {
+    public List<WeekDto> findAll(@PathVariable Integer groupId) {
         return historyService.findAllOfGroup(groupId)
-                .map(HistoryDto::new)
                 .toList();
     }
 

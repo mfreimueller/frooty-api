@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "history_tbl")
@@ -25,7 +25,7 @@ public class History {
 
     @Column(name = "scheduled_on")
     @Temporal(TemporalType.DATE)
-    private Date scheduledOn;
+    private LocalDate scheduledOn;
 
     @Column
     private Integer rating;
@@ -34,14 +34,14 @@ public class History {
 
     }
 
-    public History(Group group, Meal meal, Date scheduledOn, Integer rating) {
+    public History(Group group, Meal meal, LocalDate scheduledOn, Integer rating) {
         this.group = group;
         this.meal = meal;
         this.scheduledOn = scheduledOn;
         this.rating = rating;
     }
 
-    public History(Integer id, Group group, Meal meal, Date scheduledOn, Integer rating) {
+    public History(Integer id, Group group, Meal meal, LocalDate scheduledOn, Integer rating) {
         this.id = id;
         this.group = group;
         this.meal = meal;
@@ -65,11 +65,11 @@ public class History {
         this.meal = meal;
     }
 
-    public Date getScheduledOn() {
+    public LocalDate getScheduledOn() {
         return scheduledOn;
     }
 
-    public void setScheduledOn(Date scheduledOn) {
+    public void setScheduledOn(LocalDate scheduledOn) {
         this.scheduledOn = scheduledOn;
     }
 

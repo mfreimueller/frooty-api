@@ -2,18 +2,18 @@ package com.mfreimueller.frooty.dto;
 
 import com.mfreimueller.frooty.domain.History;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class HistoryDto {
     private Integer id;
     private Integer groupId;
     private Integer mealId;
-    private Date createdOn;
+    private LocalDate createdOn;
     private Integer rating;
 
     public HistoryDto() {}
 
-    public HistoryDto(Integer id, Integer groupId, Integer mealId, Date createdOn, Integer rating) {
+    public HistoryDto(Integer id, Integer groupId, Integer mealId, LocalDate createdOn, Integer rating) {
         this.id = id;
         this.groupId = groupId;
         this.mealId = mealId;
@@ -41,7 +41,7 @@ public class HistoryDto {
         return mealId;
     }
 
-    public Date getCreatedOn() {
+    public LocalDate getCreatedOn() {
         return createdOn;
     }
 

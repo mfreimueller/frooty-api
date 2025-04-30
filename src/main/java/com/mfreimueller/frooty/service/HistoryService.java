@@ -5,13 +5,18 @@ import com.mfreimueller.frooty.domain.History;
 import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.domain.User;
 import com.mfreimueller.frooty.dto.HistoryDto;
+import com.mfreimueller.frooty.dto.WeekDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.Objects;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -25,13 +30,34 @@ public class HistoryService {
     @Autowired
     private CurrentUserService currentUserService;
 
-    public Stream<History> findAllOfGroup(Integer groupId) {
+    public Stream<WeekDto> findAllOfGroup(Integer groupId) {
         final Group group = groupService.findOne(groupId);
 
-        return historyRepository.findByGroup(group)
-                .orElseThrow()
-                .stream()
-                .sorted(Comparator.comparing(History::getScheduledOn));
+        List<History> historyList = historyRepository.findByGroup(group).orElseThrow();
+        HashMap<LocalDate, List<HistoryDto>> groupedHistoryList = new HashMap<>();
+
+        WeekFields wf = WeekFields.of(Locale.getDefault());
+        TemporalField weekOfYearField = wf.weekOfYear();
+        DayOfWeek firstDayOfWeekField = wf.getFirstDayOfWeek();
+
+        Map<LocalDate, List<HistoryDto>> groupedHistory = historyList.stream()
+                .map(HistoryDto::new)
+                .collect(Collectors.groupingBy(dto ->
+                        dto.getCreatedOn().with(firstDayOfWeekField))
+                );
+
+        return groupedHistory.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> {
+                    LocalDate startOfWeek = entry.getKey();
+
+                    List<HistoryDto> list = entry.getValue();
+                    list.sort(Comparator.comparing(HistoryDto::getCreatedOn));
+
+                    int weekOfYear = startOfWeek.get(weekOfYearField);
+
+                    return new WeekDto(startOfWeek, weekOfYear, list);
+                });
     }
 
     public History createOne(Integer groupId, HistoryDto historyDto) {
