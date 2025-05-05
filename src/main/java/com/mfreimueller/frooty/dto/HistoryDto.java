@@ -1,53 +1,49 @@
 package com.mfreimueller.frooty.dto;
 
-import com.mfreimueller.frooty.domain.History;
-
-import java.time.LocalDate;
+import com.mfreimueller.frooty.domain.HistoryEntry;
 
 public class HistoryDto {
     private Integer id;
-    private Integer groupId;
+    private Integer weekId;
     private Integer mealId;
-    private LocalDate createdOn;
-    private Integer rating;
+    private Integer order;
+    private Integer day;
 
     public HistoryDto() {}
 
-    public HistoryDto(Integer id, Integer groupId, Integer mealId, LocalDate createdOn, Integer rating) {
+    public HistoryDto(Integer id, Integer weekId, Integer mealId, Integer order, Integer day) {
         this.id = id;
-        this.groupId = groupId;
+        this.weekId = weekId;
         this.mealId = mealId;
-        this.createdOn = createdOn;
-        this.rating = rating;
+        this.order = order;
+        this.day = day;
     }
 
-    public HistoryDto(History history) {
-        id = history.getId();
-        groupId = history.getGroup().getId();
-        mealId = history.getMeal().getId();
-        createdOn = history.getScheduledOn();
-        rating = history.getRating();
+    public HistoryDto(HistoryEntry historyEntry) {
+        id = historyEntry.getId();
+        weekId = historyEntry.getWeek().getId();
+        mealId = historyEntry.getMeal().getId();
+        order = historyEntry.getOrder();
+        day = historyEntry.getDay();
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public Integer getWeekId() {
+        return weekId;
     }
 
     public Integer getMealId() {
         return mealId;
     }
 
-    public LocalDate getCreatedOn() {
-        return createdOn;
+    public Integer getOrder() {
+        return order;
     }
 
-    public Integer getRating() {
-        return rating;
+    public Integer getDay() {
+        return day;
     }
-
-
 }

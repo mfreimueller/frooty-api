@@ -19,6 +19,10 @@ public class GroupService {
     @Autowired
     private CurrentUserService currentUserService;
 
+    public boolean isUserInGroup(Integer userId, Integer groupId) {
+        return groupRepository.existsByIdAndUsers_Id(groupId, userId);
+    }
+
     public List<Group> findAll() {
         final User currentUser = currentUserService.getCurrentUser();
 

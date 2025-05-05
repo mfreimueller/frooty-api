@@ -17,6 +17,9 @@ public class Group {
     @ManyToMany(mappedBy = "groups")
     private Set<User> users = Set.of();
 
+    @OneToMany(mappedBy = "group")
+    private Set<Week> weeks = Set.of();
+
     public Group() {
 
     }

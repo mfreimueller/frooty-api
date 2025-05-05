@@ -1,7 +1,7 @@
 package com.mfreimueller.frooty.controller;
 
 import com.mfreimueller.frooty.domain.Group;
-import com.mfreimueller.frooty.domain.History;
+import com.mfreimueller.frooty.domain.HistoryEntry;
 import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.dto.HistoryDto;
 import com.mfreimueller.frooty.dto.WeekDto;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class HistoryControllerTest {
+public class HistoryEntryControllerTest {
     @InjectMocks
     private HistoryController historyController;
 
@@ -46,9 +46,9 @@ public class HistoryControllerTest {
     @Test
     public void createOne_shouldSaveAndReturnGroup() {
         HistoryDto inputDto = new HistoryDto(null, 1, 1, LocalDate.now(), 1);
-        History savedHistory = new History(4, new Group(), new Meal(), LocalDate.now(), 1);
+        HistoryEntry savedHistoryEntry = new HistoryEntry(4, new Group(), new Meal(), LocalDate.now(), 1);
 
-        when(historyService.createOne(1, inputDto)).thenReturn(savedHistory);
+        when(historyService.createOne(1, inputDto)).thenReturn(savedHistoryEntry);
 
         HistoryDto result = historyController.createOne(1, inputDto);
         assertEquals(4, result.getId());
@@ -61,7 +61,7 @@ public class HistoryControllerTest {
         HistoryDto inputDto = new HistoryDto(1, 1, 1, LocalDate.now(), 5);
 
         Meal newMeal = new Meal(3, "Essen #3", 5, null);
-        History updated = new History(1, new Group(1, "Beste Gruppe", Set.of()), newMeal, LocalDate.now(), 5);
+        HistoryEntry updated = new HistoryEntry(1, new Group(1, "Beste Gruppe", Set.of()), newMeal, LocalDate.now(), 5);
 
         when(historyService.updateOne(1, 1, inputDto)).thenReturn(updated);
 
