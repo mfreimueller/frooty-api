@@ -1,8 +1,10 @@
 package com.mfreimueller.frooty.controller;
 
+import com.mfreimueller.frooty.dto.CreateUpdateMealDto;
 import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.service.MealService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,24 +17,17 @@ public class MealController {
     private MealService mealService;
 
     @GetMapping
-    public List<MealDto> findAll() {
-        return mealService.findAll()
-                .map(MealDto::new)
-                .toList();
+    public List<MealDto> findAll(Pageable pageable) {
+        return mealService.getAllMeals(pageable);
     }
 
     @PostMapping
-    public MealDto createOne(@RequestBody MealDto meal) {
-        return new MealDto(mealService.createOne(meal));
+    public MealDto createNewMeal(@RequestBody CreateUpdateMealDto createUpdateMealDto) {
+        return mealService.createNewMeal(createUpdateMealDto);
     }
 
-    @GetMapping("/{id}")
-    public MealDto findOne(@PathVariable Integer id) {
-        return new MealDto(mealService.findOne(id));
-    }
-
-    @PutMapping("/{id}")
-    public MealDto updateOne(@PathVariable Integer id, @RequestBody MealDto meal) {
-        return new MealDto(mealService.updateOne(id, meal));
+    @PutMapping("/{mealId}")
+    public MealDto updateMeal(@PathVariable Integer mealId, @RequestBody CreateUpdateMealDto createUpdateMealDto) {
+        return mealService.updateMeal(mealId, createUpdateMealDto);
     }
 }

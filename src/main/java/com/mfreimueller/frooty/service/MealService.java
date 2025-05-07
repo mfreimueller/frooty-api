@@ -2,36 +2,45 @@ package com.mfreimueller.frooty.service;
 
 import com.mfreimueller.frooty.domain.Category;
 import com.mfreimueller.frooty.domain.Meal;
+import com.mfreimueller.frooty.dto.CreateUpdateMealDto;
 import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.exception.EntityNotFoundException;
 import com.mfreimueller.frooty.repositories.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import java.util.List;
 
 @Service
 public class MealService {
     @Autowired
     private CategoryService categoryService;
+
     @Autowired
     private MealRepository mealRepository;
 
-    public Stream<Meal> findAll() {
-        return StreamSupport.stream(mealRepository.findAll().spliterator(), false);
+    @Autowired
+    private ConversionService conversionService;
+
+    public List<MealDto> getAllMeals(Pageable pageable) {
+        return mealRepository.findAll(pageable).stream()
+                 .map(m -> conversionService.convert(m, MealDto.class))
+                 .toList();
     }
 
-    public Meal createOne(MealDto mealDto) {
-        Assert.notNull(mealDto, "meal must not be null.");
-        Assert.notNull(mealDto.getName(), "A meal name is required.");
-        Assert.isTrue(!mealDto.getName().isEmpty(), "A meal name is required.");
+    public MealDto createNewMeal(CreateUpdateMealDto createUpdateMealDto) {
+        Assert.notNull(createUpdateMealDto, "createUpdateMealDto must not be null.");
 
-        final Category category = categoryService.findOne(mealDto.getCategoryId());
-        final Meal meal = new Meal(null, mealDto.getName(), mealDto.getComplexity(), category);
+        Category category = null;
+        if (createUpdateMealDto.categoryId() != null) {
+            category = categoryService.getCategoryById(createUpdateMealDto.categoryId());
+        }
 
-        return mealRepository.save(meal);
+        final Meal meal = new Meal(createUpdateMealDto.name(), createUpdateMealDto.complexity(), category);
+        return conversionService.convert(mealRepository.save(meal), MealDto.class);
     }
 
     public Meal findOne(Integer id) {
@@ -40,20 +49,25 @@ public class MealService {
                 .orElseThrow(() -> new EntityNotFoundException(id));
     }
 
-    public Meal updateOne(Integer id, MealDto mealDto) {
-        return mealRepository.findById(id)
+    public MealDto updateMeal(Integer mealId, CreateUpdateMealDto createUpdateMealDto) {
+        Assert.notNull(mealId, "mealId must not be null.");
+        Assert.notNull(createUpdateMealDto, "createUpdateMealDto must not be null.");
+
+        return mealRepository.findById(mealId)
                 .map(dbMeal -> {
-                    if (mealDto.getName() != null && !mealDto.getName().isEmpty()) {
-                        dbMeal.setName(mealDto.getName());
+                    dbMeal.setName(createUpdateMealDto.name());
+                    dbMeal.setComplexity(createUpdateMealDto.complexity());
+
+                    Category category = null;
+                    if (createUpdateMealDto.categoryId() != null) {
+                        category = categoryService.getCategoryById(createUpdateMealDto.categoryId());
                     }
 
-                    // TODO: boundary check: 1 - 10
-                    if (mealDto.getComplexity() != null) {
-                        dbMeal.setComplexity(mealDto.getComplexity());
-                    }
+                    dbMeal.setCategory(category);
 
                     return mealRepository.save(dbMeal);
                 })
-                .orElseThrow(() -> new EntityNotFoundException(id));
+                .map(m -> conversionService.convert(m, MealDto.class))
+                .orElseThrow(() -> new EntityNotFoundException(mealId));
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,8 +19,8 @@ public class UserRepositoryTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        User user1 = new User("Alice", "testpass1", Set.of());
-        User user2 = new User("Bob", "testpass2", Set.of());
+        User user1 = new User("Alice", "testpass1", "bob@alice.com");
+        User user2 = new User("Bob", "testpass2", "alice@bob.com");
 
         assertNull(user1.getId());
         assertNull(user2.getId());

@@ -17,7 +17,7 @@ public class CustomUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-        User u = new User(user.getUsername(), user.getPassword(), Set.of());
+        User u = new User(user.getUsername(), user.getPassword(), "");
         userRepository.save(u);
     }
 

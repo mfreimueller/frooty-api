@@ -5,9 +5,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
-import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -20,57 +17,52 @@ public class Week {
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Group group;
+    private Plan plan;
 
     @Column
     @Temporal(TemporalType.DATE)
     private LocalDate startDate;
 
     @OneToMany(mappedBy = "week")
-    private Set<HistoryEntry> historyEntries = Set.of();
+    private Set<ScheduledMeal> scheduledMeals = Set.of();
 
     public Week() {
 
     }
 
-    public Week(Group group, LocalDate startDate, Set<HistoryEntry> historyEntries) {
-        this.group = group;
+    public Week(Plan plan, LocalDate startDate) {
+        this.plan = plan;
         this.startDate = startDate;
-        this.historyEntries = historyEntries;
     }
 
-    public Week(Integer id, Group group, LocalDate startDate, Set<HistoryEntry> historyEntries) {
+    public Week(Integer id, Plan plan, LocalDate startDate, Set<ScheduledMeal> scheduledMeals) {
         this.id = id;
-        this.group = group;
+        this.plan = plan;
         this.startDate = startDate;
-        this.historyEntries = historyEntries;
+        this.scheduledMeals = scheduledMeals;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public Group getGroup() {
-        return group;
+    public Plan getPlan() {
+        return plan;
     }
 
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    public Set<HistoryEntry> getHistoryEntries() {
-        return historyEntries;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
+    public Set<ScheduledMeal> getScheduledMeals() {
+        return scheduledMeals;
     }
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public void setHistoryEntries(Set<HistoryEntry> historyEntries) {
-        this.historyEntries = historyEntries;
+    public void setScheduledMeals(Set<ScheduledMeal> scheduledMeals) {
+        this.scheduledMeals = scheduledMeals;
     }
 }

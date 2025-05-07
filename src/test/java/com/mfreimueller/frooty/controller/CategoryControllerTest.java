@@ -1,19 +1,15 @@
 package com.mfreimueller.frooty.controller;
 
-import com.mfreimueller.frooty.domain.Category;
-import com.mfreimueller.frooty.domain.Meal;
 import com.mfreimueller.frooty.dto.CategoryDto;
-import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.service.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,74 +24,16 @@ public class CategoryControllerTest {
 
     @Test
     public void findAll_shouldReturnAllCategories() {
-        Stream<Category> categories = Stream.of(
-                new Category("Vegetarisch", Set.of()),
-                new Category("Suppe", Set.of())
+        List<CategoryDto> categories = List.of(
+                new CategoryDto(1, "Vegetarisch"),
+                new CategoryDto(2, "Suppe")
         );
 
-        when(categoryService.findAll()).thenReturn(categories);
+        when(categoryService.getAllCategories(any(Pageable.class))).thenReturn(categories);
 
-        List<CategoryDto> result = categoryController.findAll();
+        List<CategoryDto> result = categoryController.findAll(Pageable.unpaged());
         assertEquals(2, result.size());
-        assertEquals("Vegetarisch", result.get(0).getName());
-        verify(categoryService, times(1)).findAll();
-    }
-
-    @Test
-    public void createOne_shouldSaveAndReturnCategory() {
-        CategoryDto input = new CategoryDto(null, "Suppe", Set.of());
-        Category saved = new Category(1, "Suppe", Set.of());
-
-        when(categoryService.createOne(input)).thenReturn(saved);
-
-        CategoryDto result = categoryController.createOne(input);
-        assertEquals(1, result.getId());
-        assertEquals("Suppe", result.getName());
-        verify(categoryService, times(1)).createOne(input);
-    }
-
-    @Test
-    public void findOne_shouldReturnCategory() {
-        List<Category> categories = List.of(
-                new Category(1, "Vegetarisch", Set.of()),
-                new Category(2, "Suppe", Set.of())
-        );
-        Category returnCategory = categories.get(1);
-
-        when(categoryService.findOne(2)).thenReturn(returnCategory);
-
-        CategoryDto result = categoryController.findOne(2);
-        assertEquals(2, result.getId());
-        assertEquals("Suppe", result.getName());
-        verify(categoryService, times(1)).findOne(2);
-    }
-
-    @Test
-    public void findMealsOfOne_shouldReturnMealsOfCategory() {
-        List<Meal> meals = List.of(
-            new Meal(1, "Klare Suppe", 1, null),
-            new Meal(2, "Tomatensuppe", 4, null)
-        );
-
-        when(categoryService.findMealsOfOne(2)).thenReturn(meals);
-
-        List<MealDto> result = categoryController.findMealsOfOne(2);
-        assertEquals(2, result.size());
-        assertEquals("Klare Suppe", result.get(0).getName());
-        verify(categoryService, times(1)).findMealsOfOne(2);
-    }
-
-    @Test
-    public void updateOne_shouldSaveAndReturnCategory() {
-        CategoryDto categoryToUpdate = new CategoryDto(1, "Supep", Set.of());
-        Category updatedCategory = new Category(1, "Suppe", Set.of());
-
-        when(categoryService.updateOne(1, categoryToUpdate)).thenReturn(updatedCategory);
-
-        CategoryDto result = categoryController.updateOne(1, categoryToUpdate);
-        assertEquals(1, result.getId());
-        assertEquals("Suppe", result.getName());
-
-        verify(categoryService, times(1)).updateOne(1, categoryToUpdate);
+        assertEquals("Vegetarisch", result.get(0).name());
+        verify(categoryService, times(1)).getAllCategories(any(Pageable.class));
     }
 }

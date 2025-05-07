@@ -5,8 +5,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "history_entry_tbl")
-public class HistoryEntry {
+@Table(name = "scheduled_meal_tbl")
+public class ScheduledMeal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,28 +22,28 @@ public class HistoryEntry {
     private Meal meal;
 
     @Column
-    private Integer order;
+    private Integer daySlot;
 
     @Column
-    private Integer day;
+    private Integer weekday;
 
-    public HistoryEntry() {
+    public ScheduledMeal() {
 
     }
 
-    public HistoryEntry(Week week, Meal meal, Integer order, Integer day) {
+    public ScheduledMeal(Week week, Meal meal, Integer daySlot, Integer weekday) {
         this.week = week;
         this.meal = meal;
-        this.order = order;
-        this.day = day;
+        this.daySlot = daySlot;
+        this.weekday = weekday;
     }
 
-    public HistoryEntry(Integer id, Week week, Meal meal, Integer order, Integer day) {
+    public ScheduledMeal(Integer id, Week week, Meal meal, Integer daySlot, Integer weekday) {
         this.id = id;
         this.week = week;
         this.meal = meal;
-        this.order = order;
-        this.day = day;
+        this.daySlot = daySlot;
+        this.weekday = weekday;
     }
 
     public Integer getId() {
@@ -58,12 +58,12 @@ public class HistoryEntry {
         return meal;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getDaySlot() {
+        return daySlot;
     }
 
-    public Integer getDay() {
-        return day;
+    public Integer getWeekday() {
+        return weekday;
     }
 
     public void setWeek(Week week) {
@@ -74,11 +74,11 @@ public class HistoryEntry {
         this.meal = meal;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setDaySlot(Integer daySlot) {
+        this.daySlot = daySlot;
     }
 
-    public void setDay(Integer day) {
-        this.day = day;
+    public void setWeekday(Integer weekday) {
+        this.weekday = weekday;
     }
 }

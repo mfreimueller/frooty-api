@@ -20,9 +20,8 @@ public class Category {
 
     }
 
-    public Category(String name, Set<Meal> meals) {
+    public Category(String name) {
         this.name = name;
-        this.meals = meals;
     }
 
     public Category(Integer id, String name, Set<Meal> meals) {

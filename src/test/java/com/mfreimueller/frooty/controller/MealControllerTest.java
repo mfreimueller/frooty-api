@@ -1,6 +1,6 @@
 package com.mfreimueller.frooty.controller;
 
-import com.mfreimueller.frooty.domain.Meal;
+import com.mfreimueller.frooty.dto.CreateUpdateMealDto;
 import com.mfreimueller.frooty.dto.MealDto;
 import com.mfreimueller.frooty.service.MealService;
 import org.junit.jupiter.api.Test;
@@ -8,9 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -25,55 +25,43 @@ public class MealControllerTest {
 
     @Test
     public void getAll_shouldReturnAllMeals() {
-        Stream<Meal> meals = Stream.of(
-                new Meal(1, "Suppe", 2, null),
-                new Meal(2, "Brot", 1, null)
+        List<MealDto> meals = List.of(
+                new MealDto(1, "Suppe", 2, null),
+                new MealDto(2, "Brot", 1, null)
         );
 
-        when(mealService.findAll()).thenReturn(meals);
+        when(mealService.getAllMeals(any(Pageable.class))).thenReturn(meals);
 
-        List<MealDto> result = mealController.findAll();
+        List<MealDto> result = mealController.findAll(Pageable.unpaged());
         assertEquals(2, result.size());
-        verify(mealService, times(1)).findAll();
+        verify(mealService, times(1)).getAllMeals(any(Pageable.class));
     }
 
     @Test
-    public void createOne_shouldSaveAndReturnMeal() {
-        MealDto input = new MealDto(null, "Suppe", 2, null);
-        Meal saved = new Meal(1, "Suppe", 2, null);
+    public void createNewMeal_shouldCallServiceAndReturnDto() {
+        CreateUpdateMealDto input = new CreateUpdateMealDto("Suppe", 2, null);
+        MealDto saved = new MealDto(1, "Suppe", 2, null);
 
-        when(mealService.createOne(input)).thenReturn(saved);
+        when(mealService.createNewMeal(input)).thenReturn(saved);
 
-        MealDto result = mealController.createOne(input);
-        assertEquals(1, result.getId());
-        assertEquals("Suppe", result.getName());
-        verify(mealService, times(1)).createOne(input);
+        MealDto result = mealController.createNewMeal(input);
+        assertEquals(1, result.id());
+        assertEquals("Suppe", result.name());
+        verify(mealService, times(1)).createNewMeal(input);
     }
 
     @Test
-    public void findOne_shouldReturnMeal() {
-        Meal meal = new Meal(2, "Suppe", 2, null);
+    public void updateOne_shouldCallServiceAndReturnDto() {
+        CreateUpdateMealDto meal = new CreateUpdateMealDto("Suppe", 2, null);
+        MealDto updated = new MealDto(1, "Knoblauchsuppe", 3, null);
 
-        when(mealService.findOne(2)).thenReturn(meal);
+        when(mealService.updateMeal(1, meal)).thenReturn(updated);
 
-        MealDto result = mealController.findOne(2);
-        assertEquals(2, result.getId());
-        assertEquals("Suppe", result.getName());
-        verify(mealService, times(1)).findOne(2);
-    }
+        MealDto result = mealController.updateMeal(1, meal);
+        assertEquals(1, result.id());
+        assertEquals("Knoblauchsuppe", result.name());
+        assertEquals(3, result.complexity());
 
-    @Test
-    public void updateOne_shouldSaveAndReturnMeal() {
-        MealDto meal = new MealDto(1, "Suppe", 2, null);
-        Meal updated = new Meal(1, "Knoblauchsuppe", 3, null);
-
-        when(mealService.updateOne(1, meal)).thenReturn(updated);
-
-        MealDto result = mealController.updateOne(1, meal);
-        assertEquals(1, result.getId());
-        assertEquals("Knoblauchsuppe", result.getName());
-        assertEquals(3, result.getComplexity());
-
-        verify(mealService, times(1)).updateOne(1, meal);
+        verify(mealService, times(1)).updateMeal(1, meal);
     }
 }
